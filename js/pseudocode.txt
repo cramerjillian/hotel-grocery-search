@@ -1,0 +1,37 @@
+initialize map variable
+initialize results variable
+
+Event listener for "submit" search query
+    prevent default behavior (refresh page)
+
+    get city
+    get state
+    get distance
+
+    call geocode city function
+    call hotel-grocery search function
+    call distance calculation function
+    call display map function
+        with markers for each pair
+
+Event listener for click on the results list
+
+    clear the existing map
+    highlight the datapoint in the table
+    create a new map centered on the two markers
+
+Event listener for click on the "clear" button
+
+    clear the existing map and results list
+
+First goal: create map centered on the desired city
+    1) Geocode API using city and state input to find lat/lang of desired city
+    2) Maps Javascript API to create the map of that city
+
+Second goal: find all hotels in the city, find all grocery stores/supermarkets in the city
+    1) fetch from Places API
+
+Third goal: Calculate distance between each hotel-city pair
+    1) Distance Matrix API
+
+Fourth goal: Display the results on a map and in a list
