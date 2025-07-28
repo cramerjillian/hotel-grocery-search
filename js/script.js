@@ -16,10 +16,12 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         // Geocode the input city to finds its latitude and longitude at the center, as well as the radius of the city from the center
         // (to be used in the Places API nearby search later)
         let geocodeResult = await geocodeCity(city, state);
-        let location = geocodeResult.cityCenter;
+        let cityCenter = geocodeResult.cityCenter;
         let searchRadius = geocodeResult.cityDiameter / 2;
-
-        createMap(location, city, state);
+        console.log(cityCenter);
+        console.log(searchRadius);
+        
+        initMap(cityCenter, searchRadius);
 
     } catch(error) {
         console.error(error);
@@ -56,34 +58,88 @@ async function geocodeCity(city, state) {
     
 }
 
-async function findHotelsGroceries(location, searchRadius) {
+async function initMap(cityCenter, searchRadius) {
 
-    let results = [];
+    // Imports the necessary map library and constructs a map object.
 
-
-}
-
-async function createMap(location, city, state) {
-
-    // Generates a map at the input city.
-
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+    let center = new google.maps.LatLng(cityCenter);
 
     map = new Map(document.getElementById("map"), {
+        center: center,
         zoom: 12,
-        center: location,
-        mapId: "DEMO_MAP_ID",
+        mapId: "DEMO_MAP_ID"
     });
 
-    const marker = new AdvancedMarkerElement({
-        map: map,
-        position: location,
-        title: `${city}, ${state}`,
-    });
+    await nearbySearch(map, cityCenter, searchRadius);
 }
 
-function haversineConversion(lat1, lat2, lon1, lon2) {
+async function nearbySearch(map, cityCenter, searchRadius) {
+
+    const { Place } = await google.maps.importLibrary("places");
+    const { LatLngBounds } = await google.maps.importLibrary("core");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+    let center = new google.maps.LatLng(cityCenter);
+
+    const requestHotels = {
+        fields: ["displayName", "location"],
+        locationRestriction: {
+            center: center,
+            radius: searchRadius
+        },
+        includedPrimaryTypes: ["lodging"],
+        maxResultCount: 5,
+        language: "en-US",
+        region: "us"
+    };
+
+    const requestGroceries = {
+        fields: ["displayName", "location"],
+        locationRestriction: {
+            center: center,
+            radius: searchRadius
+        },
+        includedPrimaryTypes: ["supermarket"],
+        maxResultCount: 5,
+        language: "en-US",
+        region: "us"
+    };
+
+    const hotels = await Place.searchNearby(requestHotels);
+    const groceries = await Place.searchNearby(requestGroceries);
+
+    console.log(hotels);
+    console.log(groceries);
+
+    if (hotels.places.length > 0) {
+
+        console.log(hotels.places);
+        const bounds = new LatLngBounds();
+
+        // Loop through and get all the results.
+        hotels.places.forEach((hotel) => {
+            const hotelPinImg = document.createElement('img');
+            hotelPinImg.src = './img/hotel-50px.png';
+
+            const markerView = new AdvancedMarkerElement({
+                map,
+                position: hotel.location,
+                content: hotelPinImg,
+                title: hotel.displayName
+        });
+            bounds.extend(hotel.location);
+            console.log(hotel);
+        });
+        map.fitBounds(bounds);
+    } else {
+        console.log("No results");
+    };
+
+    return { hotels, groceries };
+}
+
+function haversineConversion(lat1, lat2, lng1, lng2) {
 
     // Taken from: https://www.movable-type.co.uk/scripts/latlong.html //
     // Calculates the distance (in meters) between two latitude/longitude points.
@@ -93,7 +149,7 @@ function haversineConversion(lat1, lat2, lon1, lon2) {
     const p1 = lat1 * Math.PI/180;
     const p2 = lat2 * Math.PI/180;
     const deltaP = (lat2 - lat1) * Math.PI/180;
-    const deltaL = (lon2 - lon1) * Math.PI/180;
+    const deltaL = (lng2 - lng1) * Math.PI/180;
 
     const a = Math.sin(deltaP/2) * Math.sin(deltaP/2) +
               Math.cos(p1) * Math.cos(p2) *
