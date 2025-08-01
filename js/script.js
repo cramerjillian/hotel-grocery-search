@@ -18,10 +18,17 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         let geocodeResult = await geocodeCity(city, state);
         let cityCenter = geocodeResult.cityCenter;
         let searchRadius = geocodeResult.cityDiameter / 2;
+        let cityBounds = geocodeResult.cityBounds;
         console.log(cityCenter);
         console.log(searchRadius);
+        console.log(cityBounds);
         
-        initMap(cityCenter, searchRadius);
+        const { map: generatedMap, center } = await initMap(cityCenter, searchRadius);
+        map = generatedMap;
+
+        const {hotels, groceries } = await nearbySearch(map, center, searchRadius);
+
+        displayResultsList(hotels, groceries);
 
     } catch(error) {
         console.error(error);
@@ -44,9 +51,10 @@ async function geocodeCity(city, state) {
                 data.results[0].geometry.bounds.southwest.lat,
                 data.results[0].geometry.bounds.northeast.lng,
                 data.results[0].geometry.bounds.southwest.lng,
-            )
+            );
+            const cityBounds = data.results[0].geometry.bounds;
 
-            return { cityCenter, cityDiameter };
+            return { cityCenter, cityDiameter, cityBounds };
 
         } else {
             return "No results found";
@@ -71,16 +79,13 @@ async function initMap(cityCenter, searchRadius) {
         mapId: "DEMO_MAP_ID"
     });
 
-    await nearbySearch(map, cityCenter, searchRadius);
+    return { map, center };
 }
 
-async function nearbySearch(map, cityCenter, searchRadius) {
+async function nearbySearch(map, center, searchRadius) {
 
     const { Place } = await google.maps.importLibrary("places");
-    const { LatLngBounds } = await google.maps.importLibrary("core");
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
-    let center = new google.maps.LatLng(cityCenter);
 
     const requestHotels = {
         fields: ["displayName", "location"],
@@ -115,9 +120,8 @@ async function nearbySearch(map, cityCenter, searchRadius) {
     if (hotels.places.length > 0) {
 
         console.log(hotels.places);
-        const bounds = new LatLngBounds();
 
-        // Loop through and get all the results.
+        // Loop through and get all the hotel results.
         hotels.places.forEach((hotel) => {
             const hotelPinImg = document.createElement('img');
             hotelPinImg.src = './img/hotel-50px.png';
@@ -128,15 +132,56 @@ async function nearbySearch(map, cityCenter, searchRadius) {
                 content: hotelPinImg,
                 title: hotel.displayName
         });
-            bounds.extend(hotel.location);
             console.log(hotel);
         });
-        map.fitBounds(bounds);
     } else {
-        console.log("No results");
+        console.log("No hotel results");
     };
 
+    if (groceries.places.length > 0) {
+
+        console.log(groceries.places);
+
+        // Loop through and get all the grocery results.
+        groceries.places.forEach((grocery) => {
+            const groceryPinImg = document.createElement('img');
+            groceryPinImg.src = './img/grocery-50px.png';
+
+            const markerView = new AdvancedMarkerElement({
+                map,
+                position: grocery.location,
+                content: groceryPinImg,
+                title: grocery.displayName
+        });
+            console.log(grocery);
+        });
+    } else {
+        console.log("No grocery store results");
+    };
+
+
     return { hotels, groceries };
+}
+
+function displayResultsList (hotels, groceries) {
+
+    const resultsList = document.getElementById("hotels-ul");
+
+    if (hotels.places.length > 0) {
+
+        // Loop through and get all the hotel results.
+        hotels.places.forEach((hotel) => {
+            const hotelResult = document.createElement('li');
+            hotelResult.textContent = hotel.displayName;
+            resultsList.appendChild(hotelResult);
+        });
+            console.log(hotel);
+    } else {
+        console.log("No hotel results");
+    };
+
+    console.log(resultsList);
+
 }
 
 function haversineConversion(lat1, lat2, lng1, lng2) {
