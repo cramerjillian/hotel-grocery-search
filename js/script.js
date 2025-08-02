@@ -15,26 +15,45 @@ document.getElementById("input").addEventListener("submit", async (event) => {
     try {
         // Geocode the input city to finds its latitude and longitude at the center, as well as the radius of the city from the center
         // (to be used in the Places API nearby search later)
+
         let geocodeResult = await geocodeCity(city, state);
         let cityCenter = geocodeResult.cityCenter;
         let searchRadius = geocodeResult.cityDiameter / 2;
-        let cityBounds = geocodeResult.cityBounds;
+
         console.log(cityCenter);
         console.log(searchRadius);
-        console.log(cityBounds);
         
+        // Create map at the given city, state
         const { map: generatedMap, center } = await initMap(cityCenter, searchRadius);
         map = generatedMap;
 
-        const {hotels, groceries } = await nearbySearch(map, center, searchRadius);
+        // Perform search for hotels and grocery stores within the city bounds
+        const { hotels, groceries } = await nearbySearch(map, center, searchRadius);
+        
+        // Compile the list of relevant results
+        compileResultsList(hotels, groceries, distance);
 
-        displayResultsList(hotels, groceries);
+        // Display the results as a table
+        displayResultsList(resultsList);
+
 
     } catch(error) {
         console.error(error);
     }
 
-})
+});
+
+document.querySelectorAll(".table-sortable th").forEach(headerCell => {
+    headerCell.addEventListener("click", () => {
+        const tableElement = headerCell.closest(".table");
+        const headerIndex = Array.prototype.indexOf.call(headerCell.parentElement.children, headerCell);  // Finds the index of the table header cell that was clicked
+        const currentIsAscending = headerCell.classList.contains("th-sort-asc");
+
+        sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
+    });
+});
+
+// FUNCTIONS //
 
 async function geocodeCity(city, state) {
 
@@ -52,9 +71,8 @@ async function geocodeCity(city, state) {
                 data.results[0].geometry.bounds.northeast.lng,
                 data.results[0].geometry.bounds.southwest.lng,
             );
-            const cityBounds = data.results[0].geometry.bounds;
 
-            return { cityCenter, cityDiameter, cityBounds };
+            return { cityCenter, cityDiameter };
 
         } else {
             return "No results found";
@@ -114,12 +132,7 @@ async function nearbySearch(map, center, searchRadius) {
     const hotels = await Place.searchNearby(requestHotels);
     const groceries = await Place.searchNearby(requestGroceries);
 
-    console.log(hotels);
-    console.log(groceries);
-
     if (hotels.places.length > 0) {
-
-        console.log(hotels.places);
 
         // Loop through and get all the hotel results.
         hotels.places.forEach((hotel) => {
@@ -132,15 +145,12 @@ async function nearbySearch(map, center, searchRadius) {
                 content: hotelPinImg,
                 title: hotel.displayName
         });
-            console.log(hotel);
         });
     } else {
         console.log("No hotel results");
     };
 
     if (groceries.places.length > 0) {
-
-        console.log(groceries.places);
 
         // Loop through and get all the grocery results.
         groceries.places.forEach((grocery) => {
@@ -153,41 +163,56 @@ async function nearbySearch(map, center, searchRadius) {
                 content: groceryPinImg,
                 title: grocery.displayName
         });
-            console.log(grocery);
         });
     } else {
         console.log("No grocery store results");
     };
-
-
     return { hotels, groceries };
 }
 
-function displayResultsList (hotels, groceries) {
+function compileResultsList(hotels, groceries, distance) {
 
-    const resultsList = document.getElementById("hotels-ul");
+    resultsList = [];
 
-    if (hotels.places.length > 0) {
+    hotels.places.forEach((hotel) => {
+       groceries.places.forEach((grocery) => {
+            const distanceBetween = haversineConversion(hotel.location.lat(), grocery.location.lat(), hotel.location.lng(), grocery.location.lng()) * 0.000621371;  
+            // Converts haversine equation result to miles at the end
 
-        // Loop through and get all the hotel results.
-        hotels.places.forEach((hotel) => {
-            const hotelResult = document.createElement('li');
-            hotelResult.textContent = hotel.displayName;
-            resultsList.appendChild(hotelResult);
-        });
-            console.log(hotel);
-    } else {
-        console.log("No hotel results");
-    };
+            if (distanceBetween <= distance) {
+                resultsList.push([hotel, grocery]);
+            };
+       });
+    });
 
     console.log(resultsList);
 
+    return resultsList;
 }
+
+// function displayResultsList (resultsList) {
+
+//     const resultsTable = document.getElementById("table-body");
+
+//     if (resultsList.length > 0) {
+
+//         // Loop through and get all the hotel results.
+//         hotels.places.forEach((hotel) => {
+//             const hotelResult = document.createElement('td');
+//             hotelResult.textContent = hotel.displayName;
+//             resultsTable.appendChild(hotelResult);
+//         });
+//     } else {
+//         console.log("No hotel results to display");
+//     };
+
+// }
+
 
 function haversineConversion(lat1, lat2, lng1, lng2) {
 
     // Taken from: https://www.movable-type.co.uk/scripts/latlong.html //
-    // Calculates the distance (in meters) between two latitude/longitude points.
+    // Calculates the distance (in miles) between two latitude/longitude points.
 
     const R = 6371 * 1000;
 
@@ -204,5 +229,39 @@ function haversineConversion(lat1, lat2, lng1, lng2) {
     const d = R * c;
 
     return d;
+
+}
+
+// TABLE FUNCTIONS //
+// Made by following dcode's tutorial for a sortable table: https://youtu.be/8SL_hM1a0yo //
+
+function sortTableByColumn(table, column, asc = true) {
+
+    // Direction modifier: Determines whether order is ascending or descending
+    const dirModifier = asc ? 1 : -1;
+
+    const tBody = table.tBodies[0];
+    const rows = Array.from(tBody.querySelectorAll("tr"));
+
+    // Sort each row //
+    const sortedRows = rows.sort((a, b) => {
+        const aColText = a.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+        const bColText = b.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+
+        return aColText > bColText ? (1 * dirModifier) : (-1 * dirModifier);
+    });
+
+    // Remove all existing rows from the table //
+    while (tBody.firstChild) {
+        tBody.removeChild(tBody.firstChild);
+    }
+
+    // Rebuild the table with the newly sorted rows
+    tBody.append(...sortedRows);
+
+    // Remember how the column is currently sorted
+    table.querySelectorAll("th").forEach(th => th.classList.remove("th-sort-asc", "th-sort-desc")); // Clear out table sorting parameter
+    table.querySelector(`th:nth-child(${ column + 1 })`).classList.toggle("th-sort-asc", asc); // If passed in ascending param, will add the "th-sort-asc" class to the table header
+    table.querySelector(`th:nth-child(${ column + 1 })`).classList.toggle("th-sort-desc", !asc); // If passed in descending param, will add the "th-sort-desc" class to the table header
 
 }

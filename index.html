@@ -7,6 +7,7 @@
     <title>Simultaneous Maps Search</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.11/index.min.js">
     </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/styles.css"/>
 </head>
 
@@ -30,9 +31,36 @@
 
     <div class="results-container">
         <div id="map"></div>
-        <div class="hotel-results">
-            <ul id="hotels-ul">
-            </ul>
+        <table class="table table-sortable">
+            <thead>
+                <tr>
+                    <th>Result No.</th>
+                    <th>Hotel</th>
+                    <th>Grocery Store</th>
+                    <th>Distance between (mi)</th>
+                </tr>
+            </thead>
+
+            <tbody id="table-body">
+                <tr>
+                    <td>1</td>
+                    <td>Marriott</td>
+                    <td>Kroger</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Hilton</td>
+                    <td>Meier</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Holiday Inn Express</td>
+                    <td>Aldi</td>
+                    <td>4</td>
+                </tr>
+            </tbody>
         </div>
     </div>
 
