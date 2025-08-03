@@ -11,6 +11,11 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 2em;
+}
+
+#return-btn {
+    display: none;
 }
 
 .table-sortable th {
@@ -32,5 +37,13 @@ body {
 
 .table-sortable .th-sort-asc,
 .table-sortable .th-sort-desc {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+tr:hover td {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.active td {
     background: rgba(0, 0, 0, 0.1);
 }

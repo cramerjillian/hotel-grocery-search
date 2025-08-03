@@ -22,7 +22,7 @@
             <input id="stateInput" type="text" name="state" value="KY" maxlength="2" required>
             <br>
             <label for="distanceInput">Max. distance between hotels and grocery stores (miles):</label>
-            <input id="distanceInput" type="number" name="distance" value="1" required>
+            <input id="distanceInput" type="number" name="distance" value="1" min="0" max="20.00" required>
             <br>
             <button id="submit-btn" type="submit">Submit</button>
         </form>
@@ -31,6 +31,7 @@
 
     <div class="results-container">
         <div id="map"></div>
+        <button id="return-btn">Return to All Results</button>
         <table class="table table-sortable" id="table">
             <thead>
                 <tr>

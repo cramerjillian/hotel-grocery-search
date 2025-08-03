@@ -1,7 +1,6 @@
 "use strict"
 
 let map;
-let resultsList;
 let GOOGLE_API_KEY="hidden";
 
 document.getElementById("input").addEventListener("submit", async (event) => {
@@ -21,21 +20,23 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         let cityCenter = geocodeResult.cityCenter;
         let searchRadius = geocodeResult.cityDiameter / 2;
 
-        console.log(cityCenter);
-        console.log(searchRadius);
-        
         // Create map at the given city, state
-        const { map, center } = await initMap(cityCenter, searchRadius);
+        const { map, center } = await initMap(cityCenter, 12);
 
         // Perform search for hotels and grocery stores within the city bounds
         const { hotels, groceries } = await nearbySearch(map, center, searchRadius);
         
         // Compile the list of relevant results
-        compileResultsList(hotels, groceries, distance);
+        let resultsList = await compileResultsList(hotels, groceries, distance);
 
         // Display the results as a table
         displayResultsList(resultsList);
 
+        document.querySelectorAll("tbody tr").forEach(tableRow => {
+            tableRow.addEventListener("click", () => {
+                selectResult(tableRow, resultsList);
+            });
+        });
 
     } catch(error) {
         console.error(error);
@@ -61,7 +62,12 @@ document.getElementById("clear-btn").addEventListener("click", (e) => {
 
 });
 
-// FUNCTIONS //
+// document.getElementById("return-btn").addEventListener("click", (e) => {
+//     initMap(cityCenter, 12);
+//     displayResultsList(resultsList)
+// });
+
+/////////////////////////////// FUNCTIONS //////////////////////////////////////////
 
 async function geocodeCity(city, state) {
 
@@ -92,7 +98,7 @@ async function geocodeCity(city, state) {
     
 }
 
-async function initMap(cityCenter) {
+async function initMap(cityCenter, zoom) {
 
     // Imports the necessary map library and constructs a map object.
 
@@ -101,7 +107,7 @@ async function initMap(cityCenter) {
 
     map = new Map(document.getElementById("map"), {
         center: center,
-        zoom: 12,
+        zoom: zoom,
         mapId: "DEMO_MAP_ID"
     });
 
@@ -180,9 +186,14 @@ async function nearbySearch(map, center, searchRadius) {
     return { hotels, groceries };
 }
 
+// async function placeMarkers(hotels, groceries, map, center) {
+
+// }
+
 function compileResultsList(hotels, groceries, distance) {
 
-    resultsList = [];
+    let resultsList = [];
+    let resultNum = 0;
 
     hotels.places.forEach((hotel) => {
        groceries.places.forEach((grocery) => {
@@ -192,18 +203,17 @@ function compileResultsList(hotels, groceries, distance) {
             // If the calculated distance between a hotel and grocery store search result is less than/equal to the given distance, 
             // add it to the results list
             if (distanceBetween <= distance) {
-                resultsList.push([hotel, grocery, distanceBetween]);
+                resultsList.push([resultNum, hotel, grocery, distanceBetween]);
+                resultNum += 1;
             };
        });
     });
-
     return resultsList;
 }
 
-function displayResultsList (resultsList) {
+function displayResultsList(resultsList) {
 
     const resultsTable = document.getElementById("table-body");
-    let resultNum = 0;
 
     // Loop through and get all the hotel results.
     resultsList.forEach((result) => {
@@ -214,10 +224,10 @@ function displayResultsList (resultsList) {
         const groceryCell = document.createElement('td');
         const distanceCell = document.createElement('td');
 
-        resultNumCell.textContent = resultNum;
-        hotelCell.textContent = result[0].displayName;
-        groceryCell.textContent = result[1].displayName;
-        distanceCell.textContent = result[2].toFixed(2);
+        resultNumCell.textContent = result[0];
+        hotelCell.textContent = result[1].displayName;
+        groceryCell.textContent = result[2].displayName;
+        distanceCell.textContent = result[3].toFixed(2);
 
         resultRow.appendChild(resultNumCell);
         resultRow.appendChild(hotelCell);
@@ -225,7 +235,6 @@ function displayResultsList (resultsList) {
         resultRow.appendChild(distanceCell);
 
         resultsTable.appendChild(resultRow);
-        resultNum += 1;
     });
 
     document.querySelector("table").style.display = 'block';
@@ -296,4 +305,45 @@ function clearTable() {
     while (tBody.firstChild) {
         tBody.removeChild(tBody.firstChild);
     };
+}
+
+async function selectResult(tableRow, resultsList) {
+
+    document.getElementById("return-btn").style.display = 'inline-block';
+
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+    document.querySelectorAll("tr").forEach((tr) => {
+        tr.classList.remove("active");
+    });
+    tableRow.classList.add("active");
+
+    const selectedResult = tableRow.firstChild.textContent;
+
+    let hotelSelected = resultsList[selectedResult][1];
+    let grocerySelected = resultsList[selectedResult][2];
+
+    const midpointLatLng = { lat: (hotelSelected.location.lat() + grocerySelected.location.lat()) / 2, 
+        lng: (hotelSelected.location.lng() + grocerySelected.location.lng()) / 2 };
+
+    const { map } = await initMap(midpointLatLng, 13);
+
+    const hotelPinImg = document.createElement('img');
+        hotelPinImg.src = './img/hotel-50px.png';
+    const hotelMarkerView = new AdvancedMarkerElement({
+        map,
+        position: hotelSelected.location,
+        content: hotelPinImg,
+        title: hotelSelected.displayName
+    });
+
+    const groceryPinImg = document.createElement('img');
+    groceryPinImg.src = './img/grocery-50px.png';
+    const groceryMarkerView = new AdvancedMarkerElement({
+        map,
+        position: grocerySelected.location,
+        content: groceryPinImg,
+        title: grocerySelected.displayName
+    });
+    
 }
