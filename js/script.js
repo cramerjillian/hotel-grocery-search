@@ -19,7 +19,7 @@ document.getElementById("input").addEventListener("submit", async (event) => {
     try {
         // Geocode the input city to finds its latitude and longitude at the center, as well as the radius of the city from the center
         // (to be used in the Places API nearby search later)
-
+        
         let geocodeResult = await geocodeCity(city, state);
         cityCenter = geocodeResult.cityCenter;
         let searchRadius = geocodeResult.cityDiameter / 2;
@@ -29,13 +29,19 @@ document.getElementById("input").addEventListener("submit", async (event) => {
 
         // Perform search for hotels and grocery stores within the city bounds
         ({ hotels, groceries } = await nearbySearch(center, searchRadius));
-        placeMarkers(hotels.places, groceries.places, map);
         
         // Compile the list of relevant results
         let resultsList = await compileResultsList(hotels, groceries, distance);
 
         // Display the results as a table
-        displayResultsList(resultsList);
+        if (resultsList.length > 0) {
+            displayResultsList(resultsList);
+            placeMarkers(hotels.places, groceries.places, map);
+        } else {
+            document.getElementById("table").style.display = 'none';
+            document.getElementById("return-btn").style.display = 'none';
+            window.alert("Sorry, no results within the given distance");
+        };
 
         document.querySelectorAll("tbody tr").forEach(tableRow => {
             tableRow.addEventListener("click", () => {
@@ -70,6 +76,7 @@ document.getElementById("clear-btn").addEventListener("click", (e) => {
 document.getElementById("return-btn").addEventListener("click", async (e) => {
     const { map } = await initMap(cityCenter, 12);
     placeMarkers(hotels.places, groceries.places, map);
+    document.getElementById("return-btn").style.display = 'none';
 });
 
 /////////////////////////////// FUNCTIONS //////////////////////////////////////////
@@ -115,8 +122,6 @@ async function initMap(cityCenter, zoom) {
         zoom: zoom,
         mapId: "DEMO_MAP_ID"
     });
-
-    document.getElementById("map").style.display = 'block';
 
     return { map, center };
 }
