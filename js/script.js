@@ -1,6 +1,10 @@
 "use strict"
 
 let map;
+let cityCenter;
+let hotels;
+let groceries;
+
 let GOOGLE_API_KEY="hidden";
 
 document.getElementById("input").addEventListener("submit", async (event) => {
@@ -17,14 +21,15 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         // (to be used in the Places API nearby search later)
 
         let geocodeResult = await geocodeCity(city, state);
-        let cityCenter = geocodeResult.cityCenter;
+        cityCenter = geocodeResult.cityCenter;
         let searchRadius = geocodeResult.cityDiameter / 2;
 
         // Create map at the given city, state
         const { map, center } = await initMap(cityCenter, 12);
 
         // Perform search for hotels and grocery stores within the city bounds
-        const { hotels, groceries } = await nearbySearch(map, center, searchRadius);
+        ({ hotels, groceries } = await nearbySearch(center, searchRadius));
+        placeMarkers(hotels.places, groceries.places, map);
         
         // Compile the list of relevant results
         let resultsList = await compileResultsList(hotels, groceries, distance);
@@ -62,10 +67,10 @@ document.getElementById("clear-btn").addEventListener("click", (e) => {
 
 });
 
-// document.getElementById("return-btn").addEventListener("click", (e) => {
-//     initMap(cityCenter, 12);
-//     displayResultsList(resultsList)
-// });
+document.getElementById("return-btn").addEventListener("click", async (e) => {
+    const { map } = await initMap(cityCenter, 12);
+    placeMarkers(hotels.places, groceries.places, map);
+});
 
 /////////////////////////////// FUNCTIONS //////////////////////////////////////////
 
@@ -116,10 +121,9 @@ async function initMap(cityCenter, zoom) {
     return { map, center };
 }
 
-async function nearbySearch(map, center, searchRadius) {
+async function nearbySearch(center, searchRadius) {
 
     const { Place } = await google.maps.importLibrary("places");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
     const requestHotels = {
         fields: ["displayName", "location"],
@@ -148,47 +152,47 @@ async function nearbySearch(map, center, searchRadius) {
     const hotels = await Place.searchNearby(requestHotels);
     const groceries = await Place.searchNearby(requestGroceries);
 
-    if (hotels.places.length > 0) {
-
-        // Loop through and get all the hotel results.
-        hotels.places.forEach((hotel) => {
-            const hotelPinImg = document.createElement('img');
-            hotelPinImg.src = './img/hotel-50px.png';
-
-            const markerView = new AdvancedMarkerElement({
-                map,
-                position: hotel.location,
-                content: hotelPinImg,
-                title: hotel.displayName
-        });
-        });
-    } else {
-        console.log("No hotel results");
+    if (hotels.places.length === 0) {
+        window.alert("Search failed: no hotel results.");
+        return;
     };
 
-    if (groceries.places.length > 0) {
-
-        // Loop through and get all the grocery results.
-        groceries.places.forEach((grocery) => {
-            const groceryPinImg = document.createElement('img');
-            groceryPinImg.src = './img/grocery-50px.png';
-
-            const markerView = new AdvancedMarkerElement({
-                map,
-                position: grocery.location,
-                content: groceryPinImg,
-                title: grocery.displayName
-        });
-        });
-    } else {
-        console.log("No grocery store results");
+    if (groceries.places.length === 0) {
+        window.alert("Search failed: no grocery results.");
+        return;
     };
+
     return { hotels, groceries };
 }
 
-// async function placeMarkers(hotels, groceries, map, center) {
+async function placeMarkers(hotels, groceries, map) {
 
-// }
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    
+    hotels.forEach((hotel) => {
+        const hotelPinImg = document.createElement('img');
+        hotelPinImg.src = './img/hotel-50px.png';
+
+        const markerView = new AdvancedMarkerElement({
+            map,
+            position: hotel.location,
+            content: hotelPinImg,
+            title: hotel.displayName
+        });
+    });
+
+    groceries.forEach((grocery) => {
+        const groceryPinImg = document.createElement('img');
+        groceryPinImg.src = './img/grocery-50px.png';
+
+        const markerView = new AdvancedMarkerElement({
+            map,
+            position: grocery.location,
+            content: groceryPinImg,
+            title: grocery.displayName
+        });
+    });
+}
 
 function compileResultsList(hotels, groceries, distance) {
 
@@ -311,8 +315,6 @@ async function selectResult(tableRow, resultsList) {
 
     document.getElementById("return-btn").style.display = 'inline-block';
 
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
     document.querySelectorAll("tr").forEach((tr) => {
         tr.classList.remove("active");
     });
@@ -328,22 +330,6 @@ async function selectResult(tableRow, resultsList) {
 
     const { map } = await initMap(midpointLatLng, 13);
 
-    const hotelPinImg = document.createElement('img');
-        hotelPinImg.src = './img/hotel-50px.png';
-    const hotelMarkerView = new AdvancedMarkerElement({
-        map,
-        position: hotelSelected.location,
-        content: hotelPinImg,
-        title: hotelSelected.displayName
-    });
-
-    const groceryPinImg = document.createElement('img');
-    groceryPinImg.src = './img/grocery-50px.png';
-    const groceryMarkerView = new AdvancedMarkerElement({
-        map,
-        position: grocerySelected.location,
-        content: groceryPinImg,
-        title: grocerySelected.displayName
-    });
+    placeMarkers([hotelSelected], [grocerySelected], map);
     
 }
