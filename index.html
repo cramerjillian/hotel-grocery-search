@@ -24,14 +24,14 @@
             <label for="distanceInput">Max. distance between hotels and grocery stores (miles):</label>
             <input id="distanceInput" type="number" name="distance" value="1" required>
             <br>
-            <button id="submit" type="submit">Submit</button>
-            <button id="clear">Clear</button>
+            <button id="submit-btn" type="submit">Submit</button>
         </form>
+        <button id="clear-btn">Clear Results</button>
     </div>
 
     <div class="results-container">
         <div id="map"></div>
-        <table class="table table-sortable">
+        <table class="table table-sortable" id="table">
             <thead>
                 <tr>
                     <th>Result No.</th>
@@ -42,24 +42,6 @@
             </thead>
 
             <tbody id="table-body">
-                <tr>
-                    <td>1</td>
-                    <td>Marriott</td>
-                    <td>Kroger</td>
-                    <td>2</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Hilton</td>
-                    <td>Meier</td>
-                    <td>3</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Holiday Inn Express</td>
-                    <td>Aldi</td>
-                    <td>4</td>
-                </tr>
             </tbody>
         </div>
     </div>

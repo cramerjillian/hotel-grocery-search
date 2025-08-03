@@ -6,6 +6,7 @@ let GOOGLE_API_KEY="hidden";
 
 document.getElementById("input").addEventListener("submit", async (event) => {
     event.preventDefault();
+    clearTable();
 
     // Get values from the user input form for the city, state, and maximum desired distance between hotel/grocery store pairs.
     let city = document.getElementById("cityInput").value;
@@ -24,8 +25,7 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         console.log(searchRadius);
         
         // Create map at the given city, state
-        const { map: generatedMap, center } = await initMap(cityCenter, searchRadius);
-        map = generatedMap;
+        const { map, center } = await initMap(cityCenter, searchRadius);
 
         // Perform search for hotels and grocery stores within the city bounds
         const { hotels, groceries } = await nearbySearch(map, center, searchRadius);
@@ -51,6 +51,14 @@ document.querySelectorAll(".table-sortable th").forEach(headerCell => {
 
         sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
     });
+});
+
+document.getElementById("clear-btn").addEventListener("click", (e) => {
+    
+    clearTable();
+    document.getElementById("table").style.display = 'none';
+    document.getElementById("map").style.display = 'none';
+
 });
 
 // FUNCTIONS //
@@ -84,11 +92,11 @@ async function geocodeCity(city, state) {
     
 }
 
-async function initMap(cityCenter, searchRadius) {
+async function initMap(cityCenter) {
 
     // Imports the necessary map library and constructs a map object.
 
-    const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+    const { Map } = await google.maps.importLibrary("maps");
     let center = new google.maps.LatLng(cityCenter);
 
     map = new Map(document.getElementById("map"), {
@@ -96,6 +104,8 @@ async function initMap(cityCenter, searchRadius) {
         zoom: 12,
         mapId: "DEMO_MAP_ID"
     });
+
+    document.getElementById("map").style.display = 'block';
 
     return { map, center };
 }
@@ -179,34 +189,47 @@ function compileResultsList(hotels, groceries, distance) {
             const distanceBetween = haversineConversion(hotel.location.lat(), grocery.location.lat(), hotel.location.lng(), grocery.location.lng()) * 0.000621371;  
             // Converts haversine equation result to miles at the end
 
+            // If the calculated distance between a hotel and grocery store search result is less than/equal to the given distance, 
+            // add it to the results list
             if (distanceBetween <= distance) {
-                resultsList.push([hotel, grocery]);
+                resultsList.push([hotel, grocery, distanceBetween]);
             };
        });
     });
 
-    console.log(resultsList);
-
     return resultsList;
 }
 
-// function displayResultsList (resultsList) {
+function displayResultsList (resultsList) {
 
-//     const resultsTable = document.getElementById("table-body");
+    const resultsTable = document.getElementById("table-body");
+    let resultNum = 0;
 
-//     if (resultsList.length > 0) {
+    // Loop through and get all the hotel results.
+    resultsList.forEach((result) => {
+        const resultRow = document.createElement('tr');
+        
+        const resultNumCell = document.createElement('td');
+        const hotelCell = document.createElement('td');
+        const groceryCell = document.createElement('td');
+        const distanceCell = document.createElement('td');
 
-//         // Loop through and get all the hotel results.
-//         hotels.places.forEach((hotel) => {
-//             const hotelResult = document.createElement('td');
-//             hotelResult.textContent = hotel.displayName;
-//             resultsTable.appendChild(hotelResult);
-//         });
-//     } else {
-//         console.log("No hotel results to display");
-//     };
+        resultNumCell.textContent = resultNum;
+        hotelCell.textContent = result[0].displayName;
+        groceryCell.textContent = result[1].displayName;
+        distanceCell.textContent = result[2].toFixed(2);
 
-// }
+        resultRow.appendChild(resultNumCell);
+        resultRow.appendChild(hotelCell);
+        resultRow.appendChild(groceryCell);
+        resultRow.appendChild(distanceCell);
+
+        resultsTable.appendChild(resultRow);
+        resultNum += 1;
+    });
+
+    document.querySelector("table").style.display = 'block';
+}
 
 
 function haversineConversion(lat1, lat2, lng1, lng2) {
@@ -264,4 +287,13 @@ function sortTableByColumn(table, column, asc = true) {
     table.querySelector(`th:nth-child(${ column + 1 })`).classList.toggle("th-sort-asc", asc); // If passed in ascending param, will add the "th-sort-asc" class to the table header
     table.querySelector(`th:nth-child(${ column + 1 })`).classList.toggle("th-sort-desc", !asc); // If passed in descending param, will add the "th-sort-desc" class to the table header
 
+}
+
+function clearTable() {
+
+    const tBody = document.getElementById("table-body");
+
+    while (tBody.firstChild) {
+        tBody.removeChild(tBody.firstChild);
+    };
 }
