@@ -11,18 +11,30 @@
     <link rel="stylesheet" href="./css/styles.css"/>
 </head>
 
+<header>
+    <h1>Hotel-Grocery Finder</h1>
+</header>
+
 <body>
 
     <div class="search-container">
-        <p>Input a U.S. city and a distance to find hotels within the given distance of a grocery store.</p>
+        <p class="instructions">Find hotels near grocery stores in a U.S. city.</p>
         <form id="input">
-            <label for="cityInput">City:</label>
-            <input id="cityInput" type="text" name="city" value="Lexington" required>
-            <label for="stateInput">State:</label>
-            <input id="stateInput" type="text" name="state" value="KY" maxlength="2" required>
+            <div class="city-state-container">
+                <div class="city inputs">
+                    <label for="cityInput">City:</label>
+                    <input id="cityInput" type="text" name="city" value="Lexington" required>
+                </div>
+                <div class="state inputs">
+                    <label for="stateInput">State:</label>
+                    <input id="stateInput" type="text" name="state" value="KY" maxlength="2" required>
+                </div>
+            </div>
             <br>
-            <label for="distanceInput">Max. distance between hotels and grocery stores (miles):</label>
-            <input id="distanceInput" type="number" name="distance" value="1" min="0" max="20.00" required>
+            <div class="distance-input inputs">
+                <label for="distanceInput">Max. distance between hotel & grocery store (miles):</label>
+                <input id="distanceInput" type="number" name="distance" value="1" min="0" max="10.00" required>
+            </div>
             <br>
             <button id="submit-btn" type="submit">Submit</button>
         </form>
@@ -31,19 +43,21 @@
 
     <div class="results-container">
         <div id="map"></div>
-        <button id="return-btn">Return to All Results</button>
-        <table class="table table-sortable" id="table">
-            <thead>
-                <tr>
-                    <th>Result No.</th>
-                    <th>Hotel</th>
-                    <th>Grocery Store</th>
-                    <th>Distance between (mi)</th>
-                </tr>
-            </thead>
+        <div class="table-button-container">
+            <button id="return-btn" class="return-btn">Return to Overview</button>
+            <table class="table table-sortable table-responsive-sm" id="table">
+                <thead>
+                    <tr>
+                        <th>Result</th>
+                        <th>Hotel</th>
+                        <th>Grocery Store</th>
+                        <th>Distance</th>
+                    </tr>
+                </thead>
 
-            <tbody id="table-body">
-            </tbody>
+                <tbody id="table-body">
+                </tbody>
+            </table>
         </div>
     </div>
 

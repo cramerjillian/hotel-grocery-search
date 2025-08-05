@@ -2,6 +2,7 @@
 
 let map;
 let cityCenter;
+let center;
 let hotels;
 let groceries;
 
@@ -25,7 +26,7 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         let searchRadius = geocodeResult.cityDiameter / 2;
 
         // Create map at the given city, state
-        const { map, center } = await initMap(cityCenter, 12);
+        await initMap(cityCenter, 11);
 
         // Perform search for hotels and grocery stores within the city bounds
         ({ hotels, groceries } = await nearbySearch(center, searchRadius));
@@ -37,6 +38,8 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         if (resultsList.length > 0) {
             displayResultsList(resultsList);
             placeMarkers(hotels.places, groceries.places, map);
+            document.getElementById("clear-btn").style.display = 'block';
+            document.getElementById("map").style.display = 'block';
         } else {
             document.getElementById("table").style.display = 'none';
             document.getElementById("return-btn").style.display = 'none';
@@ -70,13 +73,18 @@ document.getElementById("clear-btn").addEventListener("click", (e) => {
     clearTable();
     document.getElementById("table").style.display = 'none';
     document.getElementById("map").style.display = 'none';
+    document.getElementById("return-btn").style.display = 'none';
+    document.getElementById("clear-btn").style.display = 'none';
 
 });
 
 document.getElementById("return-btn").addEventListener("click", async (e) => {
-    const { map } = await initMap(cityCenter, 12);
+    const { map } = await initMap(cityCenter, 11);
     placeMarkers(hotels.places, groceries.places, map);
     document.getElementById("return-btn").style.display = 'none';
+    document.querySelectorAll("tr").forEach((tr) => {
+        tr.classList.remove("active");
+    });
 });
 
 /////////////////////////////// FUNCTIONS //////////////////////////////////////////
@@ -115,7 +123,7 @@ async function initMap(cityCenter, zoom) {
     // Imports the necessary map library and constructs a map object.
 
     const { Map } = await google.maps.importLibrary("maps");
-    let center = new google.maps.LatLng(cityCenter);
+    center = new google.maps.LatLng(cityCenter);
 
     map = new Map(document.getElementById("map"), {
         center: center,
@@ -206,7 +214,7 @@ function compileResultsList(hotels, groceries, distance) {
 
     hotels.places.forEach((hotel) => {
        groceries.places.forEach((grocery) => {
-            const distanceBetween = haversineConversion(hotel.location.lat(), grocery.location.lat(), hotel.location.lng(), grocery.location.lng()) * 0.000621371;  
+            const distanceBetween = haversineConversion(hotel.location.lat(), grocery.location.lat(), hotel.location.lng(), grocery.location.lng()) * 0.000621371;
             // Converts haversine equation result to miles at the end
 
             // If the calculated distance between a hotel and grocery store search result is less than/equal to the given distance, 
@@ -333,7 +341,7 @@ async function selectResult(tableRow, resultsList) {
     const midpointLatLng = { lat: (hotelSelected.location.lat() + grocerySelected.location.lat()) / 2, 
         lng: (hotelSelected.location.lng() + grocerySelected.location.lng()) / 2 };
 
-    const { map } = await initMap(midpointLatLng, 13);
+    const { map } = await initMap(midpointLatLng, 12);
 
     placeMarkers([hotelSelected], [grocerySelected], map);
     
