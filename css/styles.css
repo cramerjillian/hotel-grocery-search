@@ -2,8 +2,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 2em;
-    margin-bottom: 2em;
+    margin: 2em 1em 2em 1em;
 }
 
 header {
@@ -108,6 +107,7 @@ button {
 #return-btn {
     display: none;
     width: 50%;
+    min-width: 175px;
 }
 
 table {
@@ -125,7 +125,6 @@ thead {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 500px;
     width: 100%;
 }
 
