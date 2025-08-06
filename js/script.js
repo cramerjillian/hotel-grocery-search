@@ -145,7 +145,6 @@ async function nearbySearch(center, searchRadius) {
             radius: searchRadius
         },
         includedPrimaryTypes: ["lodging"],
-        maxResultCount: 5,
         language: "en-US",
         region: "us"
     };
@@ -157,7 +156,6 @@ async function nearbySearch(center, searchRadius) {
             radius: searchRadius
         },
         includedPrimaryTypes: ["supermarket"],
-        maxResultCount: 5,
         language: "en-US",
         region: "us"
     };
@@ -174,6 +172,9 @@ async function nearbySearch(center, searchRadius) {
         window.alert("Search failed: no grocery results.");
         return;
     };
+
+    console.log(hotels.places);
+    console.log(groceries.places);
 
     return { hotels, groceries };
 }
@@ -225,6 +226,7 @@ function compileResultsList(hotels, groceries, distance) {
             };
        });
     });
+    console.log(resultsList);
     return resultsList;
 }
 
@@ -294,8 +296,15 @@ function sortTableByColumn(table, column, asc = true) {
 
     // Sort each row //
     const sortedRows = rows.sort((a, b) => {
-        const aColText = a.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
-        const bColText = b.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+
+        let aColText = parseFloat(a.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim());
+        let bColText = parseFloat(b.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim());
+
+        // Handle if column is text rather than a number
+        if (isNaN(aColText) || isNaN(bColText)) {
+            aColText = a.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+            bColText = b.querySelector(`td:nth-child(${ column + 1 })`).textContent.trim();
+        };
 
         return aColText > bColText ? (1 * dirModifier) : (-1 * dirModifier);
     });
