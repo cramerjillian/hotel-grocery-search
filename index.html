@@ -8,59 +8,68 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.11/index.min.js">
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap');
+    </style>
     <link rel="stylesheet" href="./css/styles.css"/>
 </head>
-
-<header>
-    <h1>Hotel-Grocery Finder</h1>
-</header>
-
 <body>
+    <header>
+        <h1>Hotel-Grocery Finder</h1>
+    </header>
 
-    <div class="search-container">
-        <p class="instructions">Find hotels near grocery stores in a U.S. city.</p>
-        <form id="input">
-            <div class="city-state-container">
-                <div class="city inputs">
-                    <label for="cityInput">City:</label>
-                    <input id="cityInput" type="text" name="city" value="Lexington" required>
+    <main>
+        <div class="search-container">
+            <p class="instructions">Find hotels within your preferred distance to grocery stores in a U.S. city.</p>
+            <form id="input">
+                <div class="city-state-container">
+                    <div class="city inputs">
+                        <label for="cityInput">City:</label>
+                        <input id="cityInput" type="text" name="city" value="Lexington" required>
+                    </div>
+                    <div class="state inputs">
+                        <label for="stateInput">State:</label>
+                        <input id="stateInput" type="text" name="state" value="KY" maxlength="2" required>
+                    </div>
                 </div>
-                <div class="state inputs">
-                    <label for="stateInput">State:</label>
-                    <input id="stateInput" type="text" name="state" value="KY" maxlength="2" required>
+                <br>
+                <div class="distance-input inputs">
+                    <label for="distanceInput">Max. distance between hotel & grocery store (miles):</label>
+                    <input id="distanceInput" type="number" name="distance" value="1" min="0.1" max="10.00" step="0.1" required>
                 </div>
-            </div>
-            <br>
-            <div class="distance-input inputs">
-                <label for="distanceInput">Max. distance between hotel & grocery store (miles):</label>
-                <input id="distanceInput" type="number" name="distance" value="1" min="0" max="10.00" required>
-            </div>
-            <br>
-            <button id="submit-btn" type="submit">Submit</button>
-        </form>
-        <button id="clear-btn">Clear Results</button>
-    </div>
-
-    <div class="results-container">
-        <div id="map"></div>
-        <div class="table-button-container">
-            <button id="return-btn" class="return-btn">Return to Overview</button>
-            <table class="table table-sortable table-responsive-sm" id="table">
-                <thead>
-                    <tr>
-                        <th>Result</th>
-                        <th>Hotel</th>
-                        <th>Grocery Store</th>
-                        <th>Distance</th>
-                    </tr>
-                </thead>
-
-                <tbody id="table-body">
-                </tbody>
-            </table>
+                <br>
+                <button id="submit-btn" type="submit">Submit</button>
+            </form>
+            <button id="clear-btn">Clear Results</button>
         </div>
-    </div>
 
+        <div class="results-container">
+            <div id="map"></div>
+            <div class="table-button-container">
+                <button id="return-btn" class="return-btn">Return to All Results</button>
+                <table class="table table-sortable" id="table">
+                    <thead>
+                        <tr>
+                            <th>Result</th>
+                            <th>Hotel</th>
+                            <th>Grocery</th>
+                            <th>Distance</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="about-container">
+            <a href="./about.html">About</a>
+        </div>
+    </footer>
+    
     <script>
     (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
         key: "hidden",
@@ -70,6 +79,7 @@
     <script async
         src="https://maps.googleapis.com/maps/api/js?key=hidden&libraries=places&v=beta">
     </script>
-    <script src="./js/script.js"></script>
+    <script type="module" src="./js/script.js"></script>
 </body>
+
 </html>

@@ -1,39 +1,65 @@
 body {
+    font-family: "Merriweather", serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 2em 1em 2em 1em;
+    justify-content: space-between;
+    height: 100vh;
 }
 
 header {
-    margin: 1em;
+    margin: 2em 1em 0.5em 1em;
+}
+
+main {
+    flex: 1;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer {
+    padding: 1.5em;
     text-align: center;
-    margin: 0;
+    background-color: #d4edff;
+    width: 100%;
 }
 
 #map {
+    display: none;
     width: 100%;
     max-width: 600px;
     height: 500px;
+    border: 4px solid #d4edff ;
+    margin-bottom: 0.5em;
 }
 
-table {
-    display: none;
-    width: 80%;
-    max-height: 600px;
-}
 
 .instructions {
     width: 100%;
     text-align: center;
+    margin-bottom: 2em;
 }
 
 .search-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 90%;
-    margin-top: 2em;
+    max-width: 600px;
+    width: 100%;
+    margin-top: 1em;
+}
+
+.city-state-container {
+    background-color: #d4edff;
+    max-width: 300px;
+    box-shadow: 1.5px 3.0px 3.0px hsl(205, 25%, 55%);
+    padding: 1em;
+}
+
+#submit-btn {
+    margin-top: 1em;
 }
 
 form {
@@ -48,56 +74,27 @@ label {
     margin-left: 0.75em;
 }
 
-#cityInput {
-    width: 75%;
-    margin-right: 0.75em;
-}
-
-#stateInput {
-    width: 18%;
-    margin-right: 0.75em;
-}
-
-#distanceInput {
-    width: 20%;
-}
-
-.distance-input {
-    display: flex;
-    text-align: center;
-    max-width: 300px;
-    gap: 1em;
-    flex-direction: column;
-}
-
-.inputs {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1em;
-    background-color: #d4edff;
-}
-
-.inputs:first-child {
-    padding-bottom: 0;
-}
-
 .results-container {
     display: flex;
-    width: 90%;
+    width: 100%;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     gap: 1em;
-    margin-top: 1em;
+    margin: 1.5em 1em 1em 1em;
 }
 
 button {
-    background-color: #a5d9ff;
+    background-color: #a3d9ff;
     margin-bottom: 1em;
     padding: 1em;
     border: none;
     border-radius: 5px;
+    box-shadow: 1.5px 3.0px 3.0px hsl(205, 25%, 55%);
+}
+
+button:hover {
+    background-color: #d4edff;
 }
 
 #clear-btn {
@@ -110,8 +107,68 @@ button {
     min-width: 175px;
 }
 
+a:link {
+    color: black;
+    text-decoration:dotted;
+}
+
+a:visited {
+    color: #3d7daa;
+    text-decoration: none;
+}
+
+a:hover {
+    color:#68c0ff;
+}
+
+#cityInput {
+    width: 75%;
+    margin-right: 0.75em;
+}
+
+#stateInput {
+    width: 18%;
+    margin-right: 0.75em;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.distance-input {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    max-width: 300px;
+    gap: 1em;
+    box-shadow: 1.5px 3.0px 3.0px hsl(205, 25%, 55%);
+    padding: 1em;
+}
+
+.inputs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d4edff;
+    margin: 1em;
+}
+
+.inputs:first-child {
+    padding-bottom: 0;
+}
+
 table {
+    display: none;
+    width: 80%;
+    max-height: 600px;
     max-width: 600px;
+    margin-top: 0.5em;
 }
 
 thead {
@@ -125,7 +182,7 @@ thead {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    margin-left: 1em;
 }
 
 .table-sortable th {
@@ -172,6 +229,7 @@ tr:hover td {
         max-height: 450px;
         max-width: 600px;
         overflow-y: auto;
+        scrollbar-color: #a3d9ff;
     }
 
     #return-btn {
