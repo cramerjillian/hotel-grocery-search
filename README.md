@@ -90,6 +90,6 @@ Future improvements planned are:
   * To remedy this, pagination will be used to perform multiple searches and produce multiple pages of results.
 
 * UI Improvements
-  * Make the hotel and grocery custom icons easier to click.
+  * Make the info popup when clicking icons contain more useful content and visually appealing.
   * Include external links to Google Maps for each hotel and grocery in the results list.
   * Support larger distance inputs and make the generated map zoom proportional to the input distance.
