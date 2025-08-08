@@ -20,12 +20,10 @@ npm install
 cp env.example .env
 ```
 6) Open the new .env file and paste the provided Google API key where instructed. Do not encase the API key in quotes.
-7) Run the server:
+7) Run the server, confirming that the server is running at the correct port (localhost:8080).
 ```bash
 npm run dev
 ```
-Confirm that the server is running at the correct port (localhost:8080).
-
 8) Open [localhost:8080](http://localhost:8080/) to view the homepage.
 
 ## User Instructions
