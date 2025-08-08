@@ -24,8 +24,9 @@ cp env.example .env
 ```bash
 npm run dev
 ```
-Confirm that the server is running at localhost:8080.
-8) Open localhost:8080 to view the homepage
+Confirm that the server is running at the correct port (localhost:8080).
+
+8) Open [localhost:8080](http://localhost:8080/) to view the homepage.
 
 ## User Instructions
 
