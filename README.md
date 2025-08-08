@@ -2,14 +2,35 @@
 
 ## About the Project
 
-Hotel-Grocery Search is a single-page application meant to support travel planning.
+Hotel-Grocery Search is a single-page application supporting travel planning. This project was inspired by my experiences planning low-budget travel, specifically searching for lodging with necessities within walking distance.
 
 Users may enter any U.S. city and a distance to find hotels within their preferred distance of a grocery store in that city. Using Google APIs and libraries, this tool provides a new service in that Google Maps does not currently support proximity-based searches of two different types of establishments in one query.
+
+## Installation Instructions
+
+1) Clone this Github repository.
+3) Install Node at [nodejs.org](https://nodejs.org/en), if not already installed.
+2) Open VSCode (or preferred IDE) and navigate to the project directory.
+4) In your bash terminal, install node dependences:
+```bash
+npm install
+```
+5) Create a .env file using the provided example file:
+```bash
+cp env.example .env
+```
+6) Open the new .env file and paste the provided Google API key where instructed. Do not encase the API key in quotes.
+7) Run the server:
+```bash
+npm run dev
+```
+Confirm that the server is running at localhost:8080.
+8) Open localhost:8080 to view the homepage
 
 ## User Instructions
 
 * Enter a valid U.S. city and state (abbreviated).
-* Enter a distance (in miles), representing the maximum distance between a hotel and grocery store in the results.
+* Enter a distance (in miles), representing the maximum distance between a hotel and grocery store included in the results.
 * Click the "Submit" button to perform the search.
 * Use the interactable map and search results table to view hotel-grocery store pairs that are within the your preferred distance.
   * Clicking on a row within the results table will bring up a zoomed-in map of that single hotel-grocery store result.
@@ -35,27 +56,6 @@ Users may enter any U.S. city and a distance to find hotels within their preferr
   * Generates an interactable Google Maps map on the webpage centered at the given city
 * Google Places API
   * Performs an establishment-type search within the bounds of the given city
-
-## Installation Instructions
-
-1) Clone the Github repository.
-3) Install Node at [nodejs.org](https://nodejs.org/en), if not already installed.
-2) Open VSCode (or preferred IDE) and navigate to the project directory.
-4) In your bash terminal, install node dependences:
-```bash
-npm install
-```
-5) Create a .env file using the provided example file:
-```bash
-cp env.example .env
-```
-6) Open the new .env file and paste the provided Google API key where instructed. Do not encase the API key in quotes.
-7) Run the server:
-```bash
-npm run dev
-```
-Confirm that the server is running at localhost:8080.
-8) Open localhost:8080 to view the homepage
 
 ## Project Requirements
 
