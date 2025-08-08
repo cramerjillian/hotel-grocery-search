@@ -12,6 +12,32 @@ let cityCenter;
 let cityDiameter;
 let hotels;
 let groceries;
+let googleApiKey;
+
+// ChatGPT-assisted //
+async function loadGoogleMapsScript() {
+
+    if (!googleApiKey) {
+        const res = await fetch("/api/key");
+        const data = await res.json();
+        googleApiKey = data.apiKey;
+    }
+
+    if (!googleApiKey) {
+      console.error("API key is missing");
+      return;
+    }
+
+    const body = document.querySelector("body");
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleApiKey}&libraries=places&v=beta`;
+    script.async = true;
+    script.defer = true;
+    body.appendChild(script);
+}
+
+window.addEventListener("DOMContentLoaded", loadGoogleMapsScript);
+// ChatGPT-assisted //
 
 document.getElementById("input").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -26,7 +52,7 @@ document.getElementById("input").addEventListener("submit", async (event) => {
         // Geocode the input city to finds its latitude and longitude at the center, as well as the radius of the city from the center
         // (to be used in the Places API nearby search later)
         
-        ({ cityCenter, cityDiameter } = await geocodeCity(city, state));
+        ({ cityCenter, cityDiameter } = await geocodeCity(googleApiKey, city, state));
         let searchRadius = cityDiameter / 2;
 
         // Create map at the given city, state

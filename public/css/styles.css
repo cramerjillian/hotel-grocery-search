@@ -9,6 +9,7 @@ body {
 
 header {
     margin: 2em 1em 0.5em 1em;
+    text-align: center;
 }
 
 main {
@@ -24,6 +25,10 @@ footer {
     text-align: center;
     background-color: #d4edff;
     width: 100%;
+}
+
+h2 {
+    margin: 1em;
 }
 
 #map {

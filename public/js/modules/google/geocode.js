@@ -1,8 +1,6 @@
-let GOOGLE_API_KEY="hidden";
-
-export async function geocodeCity(city, state) {
+export async function geocodeCity(googleApiKey, city, state) {
     
-    const geocodeEndpoint = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(city)}+${state}&key=${GOOGLE_API_KEY}`;
+    const geocodeEndpoint = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(city)}+${state}&key=${googleApiKey}`;
     try {
         const response = await fetch(geocodeEndpoint);
         const data = await response.json();
