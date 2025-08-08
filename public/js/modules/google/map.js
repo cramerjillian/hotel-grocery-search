@@ -23,6 +23,7 @@ export async function initMap(cityCenter, zoom) {
 export async function placeMarkers(hotels, groceries, map) {
 
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const infoWindow = new google.maps.InfoWindow();
     
     hotels.forEach((hotel) => {
         const hotelPinImg = document.createElement('img');
@@ -32,7 +33,15 @@ export async function placeMarkers(hotels, groceries, map) {
             map,
             position: hotel.location,
             content: hotelPinImg,
-            title: hotel.displayName
+            title: hotel.displayName,
+            gmpClickable: true,
+        });
+
+        markerView.addListener('click', ({ domEvent, latLng }) => {
+            const { target } = domEvent;
+            infoWindow.close();
+            infoWindow.setContent(markerView.title);
+            infoWindow.open(markerView.map, markerView);
         });
     });
 
@@ -44,7 +53,16 @@ export async function placeMarkers(hotels, groceries, map) {
             map,
             position: grocery.location,
             content: groceryPinImg,
-            title: grocery.displayName
+            title: grocery.displayName,
+            gmpClickable: true,
+        });
+
+        markerView.addListener('click', ({ domEvent, latLng }) => {
+            const { target } = domEvent;
+            infoWindow.close();
+            infoWindow.setContent(markerView.title);
+            infoWindow.open(markerView.map, markerView);
         });
     });
+
 }
