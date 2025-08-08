@@ -40,7 +40,7 @@ npm run dev
 **Frontend:**
 
 * HTML5
-* CSS6
+* CSS3
 * JavaScript ES6
 
 **Backend:**
