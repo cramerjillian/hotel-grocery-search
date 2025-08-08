@@ -85,6 +85,9 @@ ChatGPT was used for select portions of this project for both writing segments o
 
 Future improvements planned are:
 
+* Expand use-case beyond hotels and grocery stores
+  * Add dropdown menus containing more accepted Google Places location types, allowing the user to search for many types of locations within a given distance of each other.
+
 * Pagination
   * Currently, the main limitation is that Places Nearby Search is limited to returning only 20 items per query,
   meaning the search results do not return all the hotels and grocery stores in the city to compare.
