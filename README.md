@@ -79,3 +79,17 @@ This application includes the following features from the capstone requirements 
 ## Use of AI
 
 ChatGPT was used for select portions of this project for both writing segments of JavaScript code and syntax troubleshooting. Lines where AI was used have been clearly encapsulated with "// ChatGPT-assisted //" comments.
+
+## Future Improvements
+
+Future improvements planned are:
+
+* Pagination
+  * Currently, the main limitation is that Places Nearby Search is limited to returning only 20 items per query,
+  meaning the search results do not return all the hotels and grocery stores in the city to compare.
+  * To remedy this, pagination will be used to perform multiple searches and produce multiple pages of results.
+
+* UI Improvements
+  * Make the hotel and grocery custom icons easier to click.
+  * Include external links to Google Maps for each hotel and grocery in the results list.
+  * Support larger distance inputs and make the generated map zoom proportional to the input distance.

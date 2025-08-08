@@ -22,8 +22,8 @@ export async function geocodeCity(googleApiKey, city, state) {
         }
 
     } catch (error) {
-        console.error(error)
-        window.alert("Geocoding failed:", error)
+        console.error(error);
+        window.alert("Geocoding failed. Please check that you have entered a valid U.S. city and state.");
     }
     
 }

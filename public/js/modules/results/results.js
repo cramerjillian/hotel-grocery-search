@@ -3,6 +3,9 @@ export function compileResultsList(hotels, groceries, distance) {
     let resultsList = [];
     let resultNum = 0;
 
+    console.log(hotels.places);
+    console.log(groceries.places);
+
     hotels.places.forEach((hotel) => {
        groceries.places.forEach((grocery) => {
             const distanceBetween = haversineConversion(hotel.location.lat(), grocery.location.lat(), hotel.location.lng(), grocery.location.lng()) * 0.000621371;
@@ -16,6 +19,7 @@ export function compileResultsList(hotels, groceries, distance) {
             };
        });
     });
+    console.log(resultsList);
     return resultsList;
 }
 

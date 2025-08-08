@@ -1,17 +1,23 @@
 export async function initMap(cityCenter, zoom) {
 
     // Imports the necessary map library and constructs a map object.
+    try {
+        const { Map } = await google.maps.importLibrary("maps");
 
-    const { Map } = await google.maps.importLibrary("maps");
-    let center = new google.maps.LatLng(cityCenter);
+        let center = new google.maps.LatLng(cityCenter);
 
-    map = new Map(document.getElementById("map"), {
-        center: center,
-        zoom: zoom,
-        mapId: "DEMO_MAP_ID"
-    });
+        map = new Map(document.getElementById("map"), {
+            center: center,
+            zoom: zoom,
+            mapId: "DEMO_MAP_ID"
+        });
 
-    return { map, center };
+        return { map, center };
+        
+    } catch {
+        console.error(error);
+        window.alert("Failed to load Google Maps object. Please check the API key.")
+    }
 }
 
 export async function placeMarkers(hotels, groceries, map) {
