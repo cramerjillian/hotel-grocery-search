@@ -16,18 +16,18 @@ Users may enter any U.S. city and a distance to find hotels within their preferr
 
 ## Tools Used
 
-Frontend:**
+**Frontend:**
 
 * HTML5
 * CSS6
 * JavaScript ES6
 
-Backend:**
+**Backend:**
 
 * Node.js server served by Express.js framework
   * Used to prevent the Google API key from being publicly accessible on Github
 
-Google APIs:**
+**Google APIs:**
 
 * Google Geocoding API
   * Converts the user input city, state data into geographical coordinates
@@ -42,18 +42,18 @@ Google APIs:**
 3) Install Node at [nodejs.org](https://nodejs.org/en), if not already installed.
 2) Open VSCode (or preferred IDE) and navigate to the project directory.
 4) Install node dependences
-`` ```bash ``
+```bash
 npm install
-`` ``` ``
+```
 5) Create an .env file. cp .env.example .env
-`` ```bash ``
+```bash
 cp env.example .env
-`` ``` ``
+```
 6) Open the new .env file and paste the provided Google API key where instructed.
 7) Run the server (npm run dev)
-`` ```bash ``
+```bash
 npm run dev
-`` ``` ``
+```
 Confirm that the server is running at localhost:8080.
 8) Open localhost:8080 to view the homepage
 
