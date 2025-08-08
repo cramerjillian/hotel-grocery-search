@@ -49,7 +49,7 @@ npm install
 ```bash
 cp env.example .env
 ```
-6) Open the new .env file and paste the provided Google API key where instructed.
+6) Open the new .env file and paste the provided Google API key where instructed. Do not encase the API key in quotes.
 7) Run the server:
 ```bash
 npm run dev
