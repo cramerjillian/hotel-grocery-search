@@ -49,8 +49,9 @@ document.getElementById("input").addEventListener("submit", async (event) => {
     let distance = document.getElementById("distanceInput").value;
 
     try {
-        // Geocode the input city to finds its latitude and longitude at the center, as well as the radius of the city from the center
-        // (to be used in the Places API nearby search later)
+        // Geocode the input city to finds its latitude and longitude at the center, 
+        // as well as the radius of the city from the center (Using Geocoding API)
+        // (to be used in the Places API Nearby Search later)
         
         ({ cityCenter, cityDiameter } = await geocodeCity(googleApiKey, city, state));
         let searchRadius = cityDiameter / 2;
@@ -88,6 +89,7 @@ document.getElementById("input").addEventListener("submit", async (event) => {
 
 });
 
+// Functionality for sorting the results table by header
 document.querySelectorAll(".table-sortable th").forEach(headerCell => {
     headerCell.addEventListener("click", () => {
         const tableElement = headerCell.closest(".table");
@@ -98,12 +100,14 @@ document.querySelectorAll(".table-sortable th").forEach(headerCell => {
     });
 });
 
+// Functionality for the Clear Results button
 document.getElementById("clear-btn").addEventListener("click", (e) => {
 
     clearTable();
 
 });
 
+// Functionality for the Return to All Results button
 document.getElementById("return-btn").addEventListener("click", async (e) => {
     ({ map } = await initMap(cityCenter, 11));
     placeMarkers(hotels.places, groceries.places, map);

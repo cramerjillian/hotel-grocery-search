@@ -23,6 +23,7 @@ export async function geocodeCity(googleApiKey, city, state) {
 
     } catch (error) {
         console.error(error)
+        window.alert("Geocoding failed:", error)
     }
     
 }

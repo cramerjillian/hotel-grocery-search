@@ -27,8 +27,29 @@ footer {
     width: 100%;
 }
 
+p {
+    width: 60%;
+}
+
+strong {
+    text-align: center;
+    padding: 1em;
+}
+
+.indented {
+    padding-left: 2em;
+}
+
+.how-to {
+    width: 50%;
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 h2 {
-    margin: 1em;
+    margin: 1em 0 0.5em 0;
 }
 
 #map {

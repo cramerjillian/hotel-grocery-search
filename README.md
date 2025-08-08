@@ -41,16 +41,16 @@ Users may enter any U.S. city and a distance to find hotels within their preferr
 1) Clone the Github repository.
 3) Install Node at [nodejs.org](https://nodejs.org/en), if not already installed.
 2) Open VSCode (or preferred IDE) and navigate to the project directory.
-4) Install node dependences
+4) In your bash terminal, install node dependences:
 ```bash
 npm install
 ```
-5) Create an .env file. cp .env.example .env
+5) Create a .env file using the provided example file:
 ```bash
 cp env.example .env
 ```
 6) Open the new .env file and paste the provided Google API key where instructed.
-7) Run the server (npm run dev)
+7) Run the server:
 ```bash
 npm run dev
 ```
