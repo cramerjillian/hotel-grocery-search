@@ -33,6 +33,7 @@ npm run dev
 * Click the "Submit" button to perform the search.
 * Use the interactable map and search results table to view hotel-grocery store pairs that are within the your preferred distance.
   * Clicking on a row within the results table will bring up a zoomed-in map of that single hotel-grocery store result.
+  * Click and drag to move the view of the map, CTRL+Zoom to zoom in.
 
 ## Tools Used
 
